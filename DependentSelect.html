@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+
+        var injectedData = JSON.parse('<?= dataToInject ?>');
+
+        async function GetProdLine(ItemNumber) {
+            if (ItemNumber !== undefined && ItemNumber !== null) {
+                var filteredData = injectedData.filter(row => (row[5] == ItemNumber));
+                var ar = [...new Set(filteredData.map(row => row[0]))];
+            } else {
+                ar = [...new Set(injectedData.map(row => row[0]))];
+            }
+            if (ar.length === 1) {
+                let option = document.createElement("option");
+                option.value = ar[0];
+                option.text = ar[0];
+                // Automatically select the added option
+                Product_Line.appendChild(option);
+                Product_Line.selectedIndex = 0;
+                Product_Line.onclick = null;
+                Product_Line.value = ar[0];
+
+            }
+            else {
+                Product_Line.length = 0;
+
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                Product_Line.appendChild(option);
+                Product_Line.onclick = null;
+                ar.forEach(function (item, index) {
+                    let option = document.createElement("option");
+                    option.value = item;
+                    option.text = item;
+                    Product_Line.appendChild(option);
+                });
+            };
+        }
+
+
+        async function GetProdVals(Product_Line, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] === Product_Line) || (row[5] == ItemNumber));
+            var ar = [...new Set(filteredData.map(row => row[1]))];
+            var itemNumberVal = document.getElementById('ItemNumberVal');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Product.appendChild(option);
+
+                    // Automatically select the added option
+                    Product.selectedIndex = 0;
+                    Product.value = ar[0];
+                    // Check if the element with ID 'ItemNumberVal' exists
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Product');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+                }
+                else {
+                    Product.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Product.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Product.appendChild(option);
+                    });
+                }
+            }
+
+        };
+
+        async function GetProduct_Spec(Product, Product_Line, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[2]))];
+            var itemNumberVal = document.getElementById('ItemNumberVal');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Product_Spec.appendChild(option);
+                    // Automatically select the added option
+                    Product_Spec.selectedIndex = 0;
+                    Product_Spec.value = ar[0];
+                    // Check if the element with ID 'ItemNumberVal' exists
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Product_Spec');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Product_Spec.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Product_Spec.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Product_Spec.appendChild(option);
+                    });
+                }
+            }
+
+        };
+
+        async function GetColor(Product, Product_Line, Product_Spec, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product && row[2] == Product_Spec) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[3]))];
+            var itemNumberVal = document.getElementById('ItemNumberVal');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Color.appendChild(option);
+
+                    // Automatically select the added option
+                    Color.selectedIndex = 0;
+                    Color.value = ar[0];
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Color');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Color.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Color.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Color.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        async function GetSize(Product, Product_Line, Product_Spec, Color, ItemNumber) {
+            var filteredData = injectedData.filter(row => ((row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color) || row[5] == ItemNumber));
+            var ar = [...new Set(filteredData.map(row => row[4]))];
+            var itemNumberVal = document.getElementById('ItemNumberVal');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Size.appendChild(option);
+
+                    // Automatically select the added option
+                    Size.selectedIndex = 0;
+                    Size.value = ar[0];
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Size');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Size.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Size.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Size.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        function GetItemNumber(Product, Product_Line, Product_Spec, Color, Size, ItemNumber) {
+            var itemNumberVal = document.getElementById('ItemNumberVal');
+            var filteredData = injectedData.filter(row => (row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color && row[4] === Size) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[5]))];
+            // Check if the element with ID 'ItemNumberVal' exists
+            if (itemNumberVal.value == "") {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    ItemNumberVal.appendChild(option);
+
+                    // Automatically select the added option
+                    ItemNumberVal.selectedIndex = 0;
+                    ItemNumberVal.onclick = null;
+                    el = document.getElementById('ItemNumberVal');
+                    ev = document.createEvent('Event');
+                    ev.initEvent('change', true, false);
+                    el.dispatchEvent(ev);
+                }
+                else {
+                    ItemNumberVal.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    ItemNumberVal.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        ItemNumberVal.appendChild(option);
+                        ItemNumberVal.onclick = null;
+                    });
+                }
+            }
+        }
+
+        async function GetMasterItemDescription(ItemNumber) {
+            var filteredData = injectedData.filter(row => row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[6]))];
+            {
+                if (ar.length > 0) {
+                    document.getElementById('MasterItem').value = ar[0];
+                }
+            }
+        }
+
+        function getItemNumbersPreRun() {
+            var ar = [...new Set(injectedData.map(row => row[5]))].sort();
+            if (ar.length === 1) {
+                let option = document.createElement("option");
+                option.value = ar[0];
+                option.text = ar[0];
+                ItemNumberVal.appendChild(option);
+
+                // Automatically select the added option
+                ItemNumberVal.selectedIndex = 0;
+                ItemNumberVal.onclick = null;
+            }
+            else {
+                ItemNumberVal.length = 0;
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                ItemNumberVal.appendChild(option);
+
+                ar.forEach(function (item, index) {
+                    let option = document.createElement("option");
+                    option.value = item;
+                    option.text = item;
+                    ItemNumberVal.appendChild(option);
+                    ItemNumberVal.onclick = null;
+
+                });
+            }
+        }
+
+        function condMasterItem() {
+            var Size = document.getElementById("Size");
+            var ItemNumber = document.getElementById("ItemNumberVal");
+            var MasterItem = document.getElementById("MasterItem");
+            var Product_Line = document.getElementById("Product_Line");
+            var Product = document.getElementById("Product");
+            var Product_Spec = document.getElementById("Product_Spec");
+            var Color = document.getElementById("Color");
+
+            try {
+                // Check if Size value is not null and not an empty string
+                if (Size.value != "" && MasterItem.value != "" && ItemNumber.value != "") {
+                    clearDropdown();
+                    GetProdLine(ItemNumber.value);
+                    GetProdVals(null, ItemNumber.value);
+                    GetProduct_Spec(null, null, ItemNumber.value);
+                    GetColor(null, null, null, ItemNumber.value);
+                    GetSize(null, null, null, null, ItemNumber.value);
+                    GetMasterItemDescription(ItemNumber.value);
+                } else if (Size.value == "" || MasterItem.value != "") {
+                    GetProdLine(ItemNumber.value);
+                    GetProdVals(null, ItemNumber.value);
+                    GetProduct_Spec(null, null, ItemNumber.value);
+                    GetColor(null, null, null, ItemNumber.value);
+                    GetSize(null, null, null, null, ItemNumber.value);
+                    GetMasterItemDescription(ItemNumber.value);
+                } else {
+                    GetMasterItemDescription(ItemNumber.value);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+        function clearDropdown() {
+            var Size = document.getElementById("Size");
+            var MasterItem = document.getElementById("MasterItem");
+            var Product_Line = document.getElementById("Product_Line");
+            var Product = document.getElementById("Product");
+            var Product_Spec = document.getElementById("Product_Spec");
+            var Color = document.getElementById("Color");
+            dropDownval = [Size, MasterItem, Product_Line, Product, Product_Spec, Color]
+            dropDownval.forEach(function (dropdown) {
+                dropdown.innerHTML = ''; // Remove all options
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                dropdown.appendChild(option);
+            });
+        }
+
+        function openDropdown(selectElement) {
+            var event = new MouseEvent("click", {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+                clientX: 20,
+            });
+            console.log(selectElement)
+            selectElement.dispatchEvent(event);
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>RCP Production Entry</h1>
+    <?var url = getUrl();?>
+    <form method="post" action="<?= url ?>">
+        <label style="font-size: 20px">Name</label><br>
+        <input type="text" name="name" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Plant:</label><br>
+        <select name="Plants" id="Plants" style="font-size: 20px">
+            <option value="Beaver Dam">Beaver Dam</option>
+            <option value="Jordan">Jordan</option>
+            <option value="Rochester">Rochester</option>
+            <option value="Silver Creek">Silver Creek</option>
+            <option value="Thorpe">Thorpe</option>
+            <option value="ReCon">ReCon</option>
+        </select>
+        <br><br>
+        <label style="font-size: 20px">Product_Lines</label><br>
+        <select name="Product_Line" id="Product_Line" style="font-size: 20px" onclick="GetProdLine();"
+            onchange="GetProdVals(this.value, null);" onfocus="GetProdLine(); openDropdown(Product_Line)">
+        </select><br><br>
+        <label style="font-size: 20px">Product</label><br>
+        <select name="Product" id="Product" style="font-size: 20px"
+            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value);">
+        </select><br><br>
+        <label style="font-size: 20px">Product_Spec</label><br>
+        <select name="Product_Spec" id="Product_Spec" style="font-size: 20px"
+            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value)">
+        </select><br><br>
+        <label style="font-size: 20px">Color</label><br>
+        <select name="Color" id="Color" style="font-size: 20px"
+            onchange="GetSize(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, this.value)">
+        </select><br><br>
+        <label style="font-size: 20px">Size</label><br>
+        <select name="Size" id="Size" style="font-size: 20px"
+            onchange="GetItemNumber(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, document.getElementById('Color').value, this.value)">
+        </select><br><br>
+        <label style="font-size: 20px">Item Number</label><br>
+        <select name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px" onchange="condMasterItem();"
+            onclick="getItemNumbersPreRun()">
+        </select><br><br>
+        <label style="font-size: 20px">Master Item</label><br>
+        <input type="text" name="MasterItem" id="MasterItem" readonly style="font-size: 20px; width: 800px;">
+        <br><br>
+        <label style="font-size: 20px">Cycles</label><br>
+        <input type="number" name="cycles" id="cycles" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Seconds</label><br>
+        <input type="number" name="seconds" id="seconds" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Garbage</label><br>
+        <input type="number" name="garbage" id="garbage" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Date</label><br>
+        <input type="date" name="DateSelector" id="DateSelector" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Start Time</label><br>
+        <input type="time" name="starttime" id="starttime" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">End Time</label><br>
+        <input type="time" name="endtime" id="endtime" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Down Time (in minutes)</label><br>
+        <input type="number" name="downtime" id="downtime" style="font-size: 20px" /><br><br>
+        <input type="submit" name="submitButton" value="Submit" style="font-size: 20px" />
+        <span style="font-size: 20px">
+            <?= message ?>
+        </span>
+    </form>
+</body>
+
+</html>
