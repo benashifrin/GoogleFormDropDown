@@ -47,7 +47,7 @@
         async function GetProdVals(Product_Line, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] === Product_Line) || (row[5] == ItemNumber));
             var ar = [...new Set(filteredData.map(row => row[1]))];
-            var itemNumberVal = document.getElementById('ItemNumberVal');
+            var itemNumberVal = document.getElementById('itemInput');
             {
                 if (ar.length === 1) {
                     let option = document.createElement("option");
@@ -88,9 +88,11 @@
         async function GetProduct_Spec(Product, Product_Line, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[2]))];
-            var itemNumberVal = document.getElementById('ItemNumberVal');
+            var itemNumberVal = document.getElementById('itemInput');
+            console.log(ar.length)
             {
                 if (ar.length === 1) {
+                    console.log('array one and changing')
                     let option = document.createElement("option");
                     option.value = ar[0];
                     option.text = ar[0];
@@ -99,7 +101,9 @@
                     Product_Spec.selectedIndex = 0;
                     Product_Spec.value = ar[0];
                     // Check if the element with ID 'ItemNumberVal' exists
+                    console.log('item number val ' + itemNumberVal.value)
                     if (itemNumberVal.value == "") {
+                        console.log('initiating event')
                         el = document.getElementById('Product_Spec');
                         ev = document.createEvent('Event');
                         ev.initEvent('change', true, false);
@@ -129,7 +133,9 @@
         async function GetColor(Product, Product_Line, Product_Spec, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product && row[2] == Product_Spec) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[3]))];
-            var itemNumberVal = document.getElementById('ItemNumberVal');
+            var itemNumberVal = document.getElementById('itemInput');
+            console.log('ar is ' + ar)
+            console.log('itemnumber is ' + itemNumberVal.value)
             {
                 if (ar.length === 1) {
                     let option = document.createElement("option");
@@ -169,7 +175,7 @@
         async function GetSize(Product, Product_Line, Product_Spec, Color, ItemNumber) {
             var filteredData = injectedData.filter(row => ((row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color) || row[5] == ItemNumber));
             var ar = [...new Set(filteredData.map(row => row[4]))];
-            var itemNumberVal = document.getElementById('ItemNumberVal');
+            var itemNumberVal = document.getElementById('itemInput');
             {
                 if (ar.length === 1) {
                     let option = document.createElement("option");
@@ -206,44 +212,36 @@
             }
         }
 
-        function GetItemNumber(Product, Product_Line, Product_Spec, Color, Size, ItemNumber) {
-            var itemNumberVal = document.getElementById('ItemNumberVal');
+
+
+        async function GetItemNumber(Product, Product_Line, Product_Spec, Color, Size, ItemNumber) {
+            var itemNumberVal = document.getElementById('itemInput');
+            var itemNumberDataList = document.getElementById('ItemNumberVal');
             var filteredData = injectedData.filter(row => (row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color && row[4] === Size) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[5]))];
-            // Check if the element with ID 'ItemNumberVal' exists
+            console.log(ar);
+
             if (itemNumberVal.value == "") {
+                itemNumberDataList.innerHTML = ""; // Clear existing options
+
                 if (ar.length === 1) {
                     let option = document.createElement("option");
                     option.value = ar[0];
-                    option.text = ar[0];
-                    ItemNumberVal.appendChild(option);
-
-                    // Automatically select the added option
-                    ItemNumberVal.selectedIndex = 0;
-                    ItemNumberVal.onclick = null;
-                    el = document.getElementById('ItemNumberVal');
+                    itemNumberDataList.appendChild(option);
+                    itemNumberVal.value = ar[0]; // Set the input value to the single option
                     ev = document.createEvent('Event');
-                    ev.initEvent('change', true, false);
-                    el.dispatchEvent(ev);
-                }
-                else {
-                    ItemNumberVal.length = 0;
-
-                    let option = document.createElement("option");
-                    option.value = "";
-                    option.text = "";
-                    ItemNumberVal.appendChild(option);
-
+                    ev.initEvent('input', true, false);
+                    itemNumberVal.dispatchEvent(ev);
+                } else {
                     ar.forEach(function (item, index) {
                         let option = document.createElement("option");
                         option.value = item;
-                        option.text = item;
-                        ItemNumberVal.appendChild(option);
-                        ItemNumberVal.onclick = null;
+                        itemNumberDataList.appendChild(option);
                     });
                 }
             }
         }
+
 
         async function GetMasterItemDescription(ItemNumber) {
             var filteredData = injectedData.filter(row => row[5] == ItemNumber);
@@ -287,13 +285,14 @@
 
         function condMasterItem() {
             var Size = document.getElementById("Size");
-            var ItemNumber = document.getElementById("ItemNumberVal");
+            var ItemNumber = document.getElementById("itemInput");
             var MasterItem = document.getElementById("MasterItem");
             var Product_Line = document.getElementById("Product_Line");
             var Product = document.getElementById("Product");
             var Product_Spec = document.getElementById("Product_Spec");
             var Color = document.getElementById("Color");
-
+            console.log('conditional master item clicked')
+            console.log(ItemNumber.value)
             try {
                 // Check if Size value is not null and not an empty string
                 if (Size.value != "" && MasterItem.value != "" && ItemNumber.value != "") {
@@ -348,6 +347,11 @@
             selectElement.dispatchEvent(event);
         }
 
+        window.onload = function () {
+            getItemNumbersPreRun();
+        };
+
+
     </script>
 </head>
 
@@ -369,15 +373,16 @@
         <br><br>
         <label style="font-size: 20px">Product_Lines</label><br>
         <select name="Product_Line" id="Product_Line" style="font-size: 20px" onclick="GetProdLine();"
-            onchange="GetProdVals(this.value, null);" onfocus="GetProdLine(); openDropdown(Product_Line)">
+            onchange="GetProdVals(this.value, null); console.log('Product_Lines was changed');"
+            onfocus="GetProdLine(); openDropdown(Product_Line)">
         </select><br><br>
         <label style="font-size: 20px">Product</label><br>
         <select name="Product" id="Product" style="font-size: 20px"
-            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value);">
+            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value); console.log('Product was changed');">
         </select><br><br>
         <label style="font-size: 20px">Product_Spec</label><br>
         <select name="Product_Spec" id="Product_Spec" style="font-size: 20px"
-            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value)">
+            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value); console.log('Product_Spec was changed');">
         </select><br><br>
         <label style="font-size: 20px">Color</label><br>
         <select name="Color" id="Color" style="font-size: 20px"
@@ -388,9 +393,11 @@
             onchange="GetItemNumber(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, document.getElementById('Color').value, this.value)">
         </select><br><br>
         <label style="font-size: 20px">Item Number</label><br>
-        <select name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px" onchange="condMasterItem();"
-            onclick="getItemNumbersPreRun()">
-        </select><br><br>
+        <div>
+            <input list="ItemNumberVal" id="itemInput" oninput="condMasterItem();">
+            <datalist name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px">
+            </datalist><br><br>
+        </div>
         <label style="font-size: 20px">Master Item</label><br>
         <input type="text" name="MasterItem" id="MasterItem" readonly style="font-size: 20px; width: 800px;">
         <br><br>
