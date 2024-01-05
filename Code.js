@@ -1,28 +1,33 @@
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var lovSheet = ss.getSheetByName("LOV");
 
+function getParameter(parameter) {
+  return parameter ? parameter.toString() : '';
+}
+
 function doPost(e) {
-  var name = e.parameters.name.toString();
-  var Plants = e.parameters.Plants.toString();
-  var Product_Line = e.parameters.Product_Line.toString();
-  var Product = e.parameters.Product.toString();
-  var Product_Spec = e.parameters.Product_Spec.toString();
-  var Color = e.parameters.Color.toString();
-  var Size = e.parameters.Size.toString();
-  var ItemNumberVal = e.parameters.ItemNumberVal.toString();
-  var MasterItem = e.parameters.MasterItem.toString();
-  var cycles = e.parameters.cycles.toString();
-  var seconds = e.parameters.seconds.toString();
-  var garbage = e.parameters.garbage.toString();
-  var starttime = e.parameters.starttime.toString();
-  var endtime = e.parameters.endtime.toString();
-  var DateSelector = e.parameters.DateSelector.toString();
-  var downtime = e.parameters.downtime.toString();
+  var name = getParameter(e.parameters.name);
+  var Plants = getParameter(e.parameters.Plants);
+  var Product_Line = getParameter(e.parameters.Product_Line);
+  var Product = getParameter(e.parameters.Product);
+  var Product_Spec = getParameter(e.parameters.Product_Spec);
+  var Color = getParameter(e.parameters.Color);
+  var Size = getParameter(e.parameters.Size);
+  var ItemNumberVal = getParameter(e.parameters.ItemNumberVal);
+  var MasterItem = getParameter(e.parameters.MasterItem);
+  var cycles = getParameter(e.parameters.cycles);
+  var seconds = getParameter(e.parameters.seconds);
+  var garbage = getParameter(e.parameters.garbage);
+  var starttime = getParameter(e.parameters.starttime);
+  var endtime = getParameter(e.parameters.endtime);
+  var DateSelector = getParameter(e.parameters.DateSelector);
+  var downtime = getParameter(e.parameters.downtime);
 
   AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime);
 
   var htmlOutput = HtmlService.createTemplateFromFile('DependentSelect');
   htmlOutput.message = 'Record Added';
+
   
   // Retrieve and set dataToInject
   var dataToInject = fillData();

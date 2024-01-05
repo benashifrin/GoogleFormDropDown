@@ -394,8 +394,10 @@
         </select><br><br>
         <label style="font-size: 20px">Item Number</label><br>
         <div>
-            <input list="ItemNumberVal" id="itemInput" oninput="condMasterItem();">
-            <datalist name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px">
+            <input list="ItemNumberVal" id="itemInput" oninput="condMasterItem();"
+                onkeypress="return event.keyCode != 13;">
+            <datalist name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px"
+                onkeypress="return event.keyCode != 13;">
             </datalist><br><br>
         </div>
         <label style="font-size: 20px">Master Item</label><br>
@@ -414,7 +416,7 @@
         <label style="font-size: 20px">End Time</label><br>
         <input type="time" name="endtime" id="endtime" style="font-size: 20px" /><br><br>
         <label style="font-size: 20px">Down Time (in minutes)</label><br>
-        <input type="number" name="downtime" id="downtime" style="font-size: 20px" /><br><br>
+        <input type="number" name="downtime" id="downtime" style="font-size: 20px" min="0" max="100" /><br><br>
         <input type="submit" name="submitButton" value="Submit" style="font-size: 20px" />
         <span style="font-size: 20px">
             <?= message ?>
