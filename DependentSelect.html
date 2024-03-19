@@ -7,7 +7,7 @@
     <script>
 
         var injectedData = JSON.parse('<?= dataToInject ?>');
-
+        //Get Product Line using Item Number
         async function GetProdLine(ItemNumber) {
             if (ItemNumber !== undefined && ItemNumber !== null) {
                 var filteredData = injectedData.filter(row => (row[5] == ItemNumber));
@@ -43,7 +43,7 @@
             };
         }
 
-
+        //Get Product Values using params
         async function GetProdVals(Product_Line, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] === Product_Line) || (row[5] == ItemNumber));
             var ar = [...new Set(filteredData.map(row => row[1]))];
@@ -84,15 +84,13 @@
             }
 
         };
-
+        //Get Product Specs using params
         async function GetProduct_Spec(Product, Product_Line, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[2]))];
             var itemNumberVal = document.getElementById('itemInput');
-            console.log(ar.length)
             {
                 if (ar.length === 1) {
-                    console.log('array one and changing')
                     let option = document.createElement("option");
                     option.value = ar[0];
                     option.text = ar[0];
@@ -101,9 +99,7 @@
                     Product_Spec.selectedIndex = 0;
                     Product_Spec.value = ar[0];
                     // Check if the element with ID 'ItemNumberVal' exists
-                    console.log('item number val ' + itemNumberVal.value)
                     if (itemNumberVal.value == "") {
-                        console.log('initiating event')
                         el = document.getElementById('Product_Spec');
                         ev = document.createEvent('Event');
                         ev.initEvent('change', true, false);
@@ -129,13 +125,11 @@
             }
 
         };
-
+        //Get Colors using params
         async function GetColor(Product, Product_Line, Product_Spec, ItemNumber) {
             var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product && row[2] == Product_Spec) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[3]))];
             var itemNumberVal = document.getElementById('itemInput');
-            console.log('ar is ' + ar)
-            console.log('itemnumber is ' + itemNumberVal.value)
             {
                 if (ar.length === 1) {
                     let option = document.createElement("option");
@@ -171,7 +165,7 @@
                 }
             }
         }
-
+        //Get Sizes using params
         async function GetSize(Product, Product_Line, Product_Spec, Color, ItemNumber) {
             var filteredData = injectedData.filter(row => ((row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color) || row[5] == ItemNumber));
             var ar = [...new Set(filteredData.map(row => row[4]))];
@@ -213,13 +207,12 @@
         }
 
 
-
+        //Get Item numbers using params
         async function GetItemNumber(Product, Product_Line, Product_Spec, Color, Size, ItemNumber) {
             var itemNumberVal = document.getElementById('itemInput');
             var itemNumberDataList = document.getElementById('ItemNumberVal');
             var filteredData = injectedData.filter(row => (row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color && row[4] === Size) || row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[5]))];
-            console.log(ar);
 
             if (itemNumberVal.value == "") {
                 itemNumberDataList.innerHTML = ""; // Clear existing options
@@ -242,7 +235,7 @@
             }
         }
 
-
+        //Get master item desc using params
         async function GetMasterItemDescription(ItemNumber) {
             var filteredData = injectedData.filter(row => row[5] == ItemNumber);
             var ar = [...new Set(filteredData.map(row => row[6]))];
@@ -252,7 +245,7 @@
                 }
             }
         }
-
+        //Get item numbers on load
         function getItemNumbersPreRun() {
             var ar = [...new Set(injectedData.map(row => row[5]))].sort();
             if (ar.length === 1) {
@@ -282,7 +275,7 @@
                 });
             }
         }
-
+        //clears dropdowns for masteritemdescription
         function condMasterItem() {
             var Size = document.getElementById("Size");
             var ItemNumber = document.getElementById("itemInput");
@@ -291,8 +284,7 @@
             var Product = document.getElementById("Product");
             var Product_Spec = document.getElementById("Product_Spec");
             var Color = document.getElementById("Color");
-            console.log('conditional master item clicked')
-            console.log(ItemNumber.value)
+
             try {
                 // Check if Size value is not null and not an empty string
                 if (Size.value != "" && MasterItem.value != "" && ItemNumber.value != "") {
@@ -304,6 +296,7 @@
                     GetSize(null, null, null, null, ItemNumber.value);
                     GetMasterItemDescription(ItemNumber.value);
                 } else if (Size.value == "" || MasterItem.value != "") {
+                    clearDropdown(); // Clear dropdown when Size is empty or MasterItem is not empty
                     GetProdLine(ItemNumber.value);
                     GetProdVals(null, ItemNumber.value);
                     GetProduct_Spec(null, null, ItemNumber.value);
@@ -318,7 +311,7 @@
             }
         }
 
-
+        //clears dropdowns
         function clearDropdown() {
             var Size = document.getElementById("Size");
             var MasterItem = document.getElementById("MasterItem");
@@ -326,7 +319,8 @@
             var Product = document.getElementById("Product");
             var Product_Spec = document.getElementById("Product_Spec");
             var Color = document.getElementById("Color");
-            dropDownval = [Size, MasterItem, Product_Line, Product, Product_Spec, Color]
+
+            dropDownval = [Size, MasterItem, Product_Line, Product, Product_Spec, Color];
             dropDownval.forEach(function (dropdown) {
                 dropdown.innerHTML = ''; // Remove all options
                 let option = document.createElement("option");
@@ -334,31 +328,66 @@
                 option.text = "";
                 dropdown.appendChild(option);
             });
+
+            // Clear the text value of the Master Item input field
+            MasterItem.value = "";
+            getItemNumbersPreRun()
         }
 
-        function openDropdown(selectElement) {
-            var event = new MouseEvent("click", {
-                view: window,
-                bubbles: true,
-                cancelable: true,
-                clientX: 20,
-            });
-            console.log(selectElement)
-            selectElement.dispatchEvent(event);
+        //enforce timer
+        function enforceDowntimeSelection(dropdownId, durationId) {
+            var durationInput = document.getElementById(durationId);
+            var dropdown = document.getElementById(dropdownId);
+            // If duration input has a value (indicating a duration is entered)
+            if (durationInput.value !== "" && parseFloat(durationInput.value) !== 0) {
+                dropdown.required = true;
+            } else {
+                // Remove the requirement if the duration is empty
+                dropdown.required = false;
+            }
         }
 
+        //enforce downtime label
+        function checkDowntimeRequirement(dropdownId, durationId) {
+            var dropdown = document.getElementById(dropdownId);
+            var durationInput = document.getElementById(durationId);
+
+            if (dropdown.value !== "") {
+                durationInput.required = true;
+            } else {
+                durationInput.required = false;
+            }
+        }
+
+        //get Itemnumbers in the beggining
         window.onload = function () {
             getItemNumbersPreRun();
         };
+
+        //disable submit button for 5 seconds
+
+        function handleSubmit() {
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = document.querySelector('[name="submitButton"]');
+            submitButton.disabled = true;
+
+            // Re-enable the submit button after 5 seconds
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 5000);
+
+            // Allow the form to submit normally
+            return true;
+        }
 
 
     </script>
 </head>
 
 <body>
-    <h1>RCP Production Entry</h1>
+    <h1>RCP Production Entry PROD</h1>
     <?var url = getUrl();?>
-    <form method="post" action="<?= url ?>">
+    <form method="post" action="<?= url ?>" onsubmit="return handleSubmit();">
         <label style="font-size: 20px">Name</label><br>
         <input type="text" name="name" style="font-size: 20px" /><br><br>
         <label style="font-size: 20px">Plant:</label><br>
@@ -373,16 +402,15 @@
         <br><br>
         <label style="font-size: 20px">Product_Lines</label><br>
         <select name="Product_Line" id="Product_Line" style="font-size: 20px" onclick="GetProdLine();"
-            onchange="GetProdVals(this.value, null); console.log('Product_Lines was changed');"
-            onfocus="GetProdLine(); openDropdown(Product_Line)">
+            onchange="GetProdVals(this.value, null); " onfocus="GetProdLine(); openDropdown(Product_Line)">
         </select><br><br>
         <label style="font-size: 20px">Product</label><br>
         <select name="Product" id="Product" style="font-size: 20px"
-            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value); console.log('Product was changed');">
+            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value); ">
         </select><br><br>
         <label style="font-size: 20px">Product_Spec</label><br>
         <select name="Product_Spec" id="Product_Spec" style="font-size: 20px"
-            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value); console.log('Product_Spec was changed');">
+            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value); ">
         </select><br><br>
         <label style="font-size: 20px">Color</label><br>
         <select name="Color" id="Color" style="font-size: 20px"
@@ -394,10 +422,9 @@
         </select><br><br>
         <label style="font-size: 20px">Item Number</label><br>
         <div>
-            <input list="ItemNumberVal" id="itemInput" oninput="condMasterItem();"
+            <input list="ItemNumberVal" id="itemInput" name="ItemNumberVal" required oninput="condMasterItem();"
                 onkeypress="return event.keyCode != 13;">
-            <datalist name="ItemNumberVal" id="ItemNumberVal" style="font-size: 20px"
-                onkeypress="return event.keyCode != 13;">
+            <datalist id="ItemNumberVal" style="font-size: 20px" onkeypress="return event.keyCode != 13;">
             </datalist><br><br>
         </div>
         <label style="font-size: 20px">Master Item</label><br>
@@ -415,8 +442,86 @@
         <input type="time" name="starttime" id="starttime" style="font-size: 20px" /><br><br>
         <label style="font-size: 20px">End Time</label><br>
         <input type="time" name="endtime" id="endtime" style="font-size: 20px" /><br><br>
-        <label style="font-size: 20px">Down Time (in minutes)</label><br>
-        <input type="number" name="downtime" id="downtime" style="font-size: 20px" min="0" max="100" /><br><br>
+        <label style="font-size: 20px">Down Time 1 (in minutes)</label><br>
+        <select name="downtime1" id="downtime1" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime1', 'duration1')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration1" id="duration1" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime1', 'duration1')" /><br><br>
+        <label style="font-size: 20px">Down Time 2 (in minutes)</label><br>
+        <select name="downtime2" id="downtime2" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime2', 'duration2')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration2" id="duration2" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime2', 'duration2')" /><br><br>
+        <label style="font-size: 20px">Down Time 3 (in minutes)</label><br>
+        <select name="downtime3" id="downtime3" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime3', 'duration3')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration3" id="duration3" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime3', 'duration3')" /><br><br>
+        <label style="font-size: 20px">Down Time 4 (in minutes)</label><br>
+        <select name="downtime4" id="downtime4" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime4', 'duration4')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration4" id="duration4" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime4', 'duration4')" /><br><br>
+        <label style="font-size: 20px">Down Time 5 (in minutes)</label><br>
+        <select name="downtime5" id="downtime5" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime5', 'duration5')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration5" id="duration5" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime5', 'duration5')" /><br><br>
         <input type="submit" name="submitButton" value="Submit" style="font-size: 20px" />
         <span style="font-size: 20px">
             <?= message ?>

@@ -4,7 +4,7 @@ var lovSheet = ss.getSheetByName("LOV");
 function getParameter(parameter) {
   return parameter ? parameter.toString() : '';
 }
-
+// Stores values from HTML Form
 function doPost(e) {
   var name = getParameter(e.parameters.name);
   var Plants = getParameter(e.parameters.Plants);
@@ -21,9 +21,18 @@ function doPost(e) {
   var starttime = getParameter(e.parameters.starttime);
   var endtime = getParameter(e.parameters.endtime);
   var DateSelector = getParameter(e.parameters.DateSelector);
-  var downtime = getParameter(e.parameters.downtime);
-
-  AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime);
+  var downtime1 = getParameter(e.parameters.downtime1);
+  var downtime2 = getParameter(e.parameters.downtime2);
+  var downtime3 = getParameter(e.parameters.downtime3);
+  var downtime4 = getParameter(e.parameters.downtime4);
+  var downtime5 = getParameter(e.parameters.downtime5);
+  var duration1 = getParameter(e.parameters.duration1);
+  var duration2 = getParameter(e.parameters.duration2);
+  var duration3 = getParameter(e.parameters.duration3);
+  var duration4 = getParameter(e.parameters.duration4);
+  var duration5 = getParameter(e.parameters.duration5);
+  var currentDate = new Date();
+  AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime1, downtime2, downtime3, downtime4, downtime5, duration1, duration2, duration3, duration4, duration5, currentDate);
 
   var htmlOutput = HtmlService.createTemplateFromFile('DependentSelect');
   htmlOutput.message = 'Record Added';
@@ -38,8 +47,7 @@ function doPost(e) {
 
 
 
-// Cache the data for a longer duration, adjust as needed
-
+// ,Fill values with N/A
 function fillData() {
   var range = lovSheet.getRange(2, 1, lovSheet.getLastRow(), 7);
   var values = range.getValues();
@@ -59,7 +67,7 @@ function fillData() {
 
 // Initialize filledData using cached data
 var filledData = fillData();
-
+//Helper function for append
 function doGet(e) {
   var htmlOutput =  HtmlService.createTemplateFromFile('DependentSelect');
   htmlOutput.message = '';
@@ -68,10 +76,11 @@ function doGet(e) {
   return htmlOutput.evaluate();
 }
 
+//actual function that appends data
+function AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime1, downtime2, downtime3, downtime4, downtime5, duration1, duration2, duration3, duration4, duration5, currentDate) {
+  var dataSheet = ss.getSheetByName("PRODFINAL");
+  dataSheet.appendRow([name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime1, duration1, downtime2, duration2, downtime3, duration3, downtime4, duration4, downtime5, duration5, currentDate]);
 
-function AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime) {
-  var dataSheet = ss.getSheetByName("DATA");
-  dataSheet.appendRow([name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime, new Date()]);
 }
 
 function getUrl() {
