@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+
+        var injectedData = JSON.parse('<?= dataToInject ?>');
+        //Get Product Line using Item Number
+        async function GetProdLine(ItemNumber) {
+            if (ItemNumber !== undefined && ItemNumber !== null) {
+                var filteredData = injectedData.filter(row => (row[5] == ItemNumber));
+                var ar = [...new Set(filteredData.map(row => row[0]))];
+            } else {
+                ar = [...new Set(injectedData.map(row => row[0]))];
+            }
+            if (ar.length === 1) {
+                let option = document.createElement("option");
+                option.value = ar[0];
+                option.text = ar[0];
+                // Automatically select the added option
+                Product_Line.appendChild(option);
+                Product_Line.selectedIndex = 0;
+                Product_Line.onclick = null;
+                Product_Line.value = ar[0];
+
+            }
+            else {
+                Product_Line.length = 0;
+
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                Product_Line.appendChild(option);
+                Product_Line.onclick = null;
+                ar.forEach(function (item, index) {
+                    let option = document.createElement("option");
+                    option.value = item;
+                    option.text = item;
+                    Product_Line.appendChild(option);
+                });
+            };
+        }
+
+        //Get Product Values using params
+        async function GetProdVals(Product_Line, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] === Product_Line) || (row[5] == ItemNumber));
+            var ar = [...new Set(filteredData.map(row => row[1]))];
+            var itemNumberVal = document.getElementById('itemInput');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Product.appendChild(option);
+
+                    // Automatically select the added option
+                    Product.selectedIndex = 0;
+                    Product.value = ar[0];
+                    // Check if the element with ID 'ItemNumberVal' exists
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Product');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+                }
+                else {
+                    Product.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Product.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Product.appendChild(option);
+                    });
+                }
+            }
+
+        };
+        //Get Product Specs using params
+        async function GetProduct_Spec(Product, Product_Line, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[2]))];
+            var itemNumberVal = document.getElementById('itemInput');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Product_Spec.appendChild(option);
+                    // Automatically select the added option
+                    Product_Spec.selectedIndex = 0;
+                    Product_Spec.value = ar[0];
+                    // Check if the element with ID 'ItemNumberVal' exists
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Product_Spec');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Product_Spec.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Product_Spec.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Product_Spec.appendChild(option);
+                    });
+                }
+            }
+
+        };
+        //Get Colors using params
+        async function GetColor(Product, Product_Line, Product_Spec, ItemNumber) {
+            var filteredData = injectedData.filter(row => (row[0] == Product_Line && row[1] == Product && row[2] == Product_Spec) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[3]))];
+            var itemNumberVal = document.getElementById('itemInput');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Color.appendChild(option);
+
+                    // Automatically select the added option
+                    Color.selectedIndex = 0;
+                    Color.value = ar[0];
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Color');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Color.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Color.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Color.appendChild(option);
+                    });
+                }
+            }
+        }
+        //Get Sizes using params
+        async function GetSize(Product, Product_Line, Product_Spec, Color, ItemNumber) {
+            var filteredData = injectedData.filter(row => ((row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color) || row[5] == ItemNumber));
+            var ar = [...new Set(filteredData.map(row => row[4]))];
+            var itemNumberVal = document.getElementById('itemInput');
+            {
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    option.text = ar[0];
+                    Size.appendChild(option);
+
+                    // Automatically select the added option
+                    Size.selectedIndex = 0;
+                    Size.value = ar[0];
+                    if (itemNumberVal.value == "") {
+                        el = document.getElementById('Size');
+                        ev = document.createEvent('Event');
+                        ev.initEvent('change', true, false);
+                        el.dispatchEvent(ev);
+                    }
+
+                }
+                else {
+                    Size.length = 0;
+
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.text = "";
+                    Size.appendChild(option);
+
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        option.text = item;
+                        Size.appendChild(option);
+                    });
+                }
+            }
+        }
+
+
+        //Get Item numbers using params
+        async function GetItemNumber(Product, Product_Line, Product_Spec, Color, Size, ItemNumber) {
+            var itemNumberVal = document.getElementById('itemInput');
+            var itemNumberDataList = document.getElementById('ItemNumberVal');
+            var filteredData = injectedData.filter(row => (row[0] === Product_Line && row[1] === Product && row[2] === Product_Spec && row[3] === Color && row[4] === Size) || row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[5]))];
+
+            if (itemNumberVal.value == "") {
+                itemNumberDataList.innerHTML = ""; // Clear existing options
+
+                if (ar.length === 1) {
+                    let option = document.createElement("option");
+                    option.value = ar[0];
+                    itemNumberDataList.appendChild(option);
+                    itemNumberVal.value = ar[0]; // Set the input value to the single option
+                    ev = document.createEvent('Event');
+                    ev.initEvent('input', true, false);
+                    itemNumberVal.dispatchEvent(ev);
+                } else {
+                    ar.forEach(function (item, index) {
+                        let option = document.createElement("option");
+                        option.value = item;
+                        itemNumberDataList.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        //Get master item desc using params
+        async function GetMasterItemDescription(ItemNumber) {
+            var filteredData = injectedData.filter(row => row[5] == ItemNumber);
+            var ar = [...new Set(filteredData.map(row => row[6]))];
+            {
+                if (ar.length > 0) {
+                    document.getElementById('MasterItem').value = ar[0];
+                }
+            }
+        }
+        //Get item numbers on load
+        function getItemNumbersPreRun() {
+            var ar = [...new Set(injectedData.map(row => row[5]))].sort();
+            if (ar.length === 1) {
+                let option = document.createElement("option");
+                option.value = ar[0];
+                option.text = ar[0];
+                ItemNumberVal.appendChild(option);
+
+                // Automatically select the added option
+                ItemNumberVal.selectedIndex = 0;
+                ItemNumberVal.onclick = null;
+            }
+            else {
+                ItemNumberVal.length = 0;
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                ItemNumberVal.appendChild(option);
+
+                ar.forEach(function (item, index) {
+                    let option = document.createElement("option");
+                    option.value = item;
+                    option.text = item;
+                    ItemNumberVal.appendChild(option);
+                    ItemNumberVal.onclick = null;
+
+                });
+            }
+        }
+        //clears dropdowns for masteritemdescription
+        function condMasterItem() {
+            var Size = document.getElementById("Size");
+            var ItemNumber = document.getElementById("itemInput");
+            var MasterItem = document.getElementById("MasterItem");
+            var Product_Line = document.getElementById("Product_Line");
+            var Product = document.getElementById("Product");
+            var Product_Spec = document.getElementById("Product_Spec");
+            var Color = document.getElementById("Color");
+
+            try {
+                // Check if Size value is not null and not an empty string
+                if (Size.value != "" && MasterItem.value != "" && ItemNumber.value != "") {
+                    clearDropdown();
+                    GetProdLine(ItemNumber.value);
+                    GetProdVals(null, ItemNumber.value);
+                    GetProduct_Spec(null, null, ItemNumber.value);
+                    GetColor(null, null, null, ItemNumber.value);
+                    GetSize(null, null, null, null, ItemNumber.value);
+                    GetMasterItemDescription(ItemNumber.value);
+                } else if (Size.value == "" || MasterItem.value != "") {
+                    clearDropdown(); // Clear dropdown when Size is empty or MasterItem is not empty
+                    GetProdLine(ItemNumber.value);
+                    GetProdVals(null, ItemNumber.value);
+                    GetProduct_Spec(null, null, ItemNumber.value);
+                    GetColor(null, null, null, ItemNumber.value);
+                    GetSize(null, null, null, null, ItemNumber.value);
+                    GetMasterItemDescription(ItemNumber.value);
+                } else {
+                    GetMasterItemDescription(ItemNumber.value);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        //clears dropdowns
+        function clearDropdown() {
+            var Size = document.getElementById("Size");
+            var MasterItem = document.getElementById("MasterItem");
+            var Product_Line = document.getElementById("Product_Line");
+            var Product = document.getElementById("Product");
+            var Product_Spec = document.getElementById("Product_Spec");
+            var Color = document.getElementById("Color");
+
+            dropDownval = [Size, MasterItem, Product_Line, Product, Product_Spec, Color];
+            dropDownval.forEach(function (dropdown) {
+                dropdown.innerHTML = ''; // Remove all options
+                let option = document.createElement("option");
+                option.value = "";
+                option.text = "";
+                dropdown.appendChild(option);
+            });
+
+            // Clear the text value of the Master Item input field
+            MasterItem.value = "";
+            getItemNumbersPreRun()
+        }
+
+        //enforce timer
+        function enforceDowntimeSelection(dropdownId, durationId) {
+            var durationInput = document.getElementById(durationId);
+            var dropdown = document.getElementById(dropdownId);
+            // If duration input has a value (indicating a duration is entered)
+            if (durationInput.value !== "" && parseFloat(durationInput.value) !== 0) {
+                dropdown.required = true;
+            } else {
+                // Remove the requirement if the duration is empty
+                dropdown.required = false;
+            }
+        }
+
+        //enforce downtime label
+        function checkDowntimeRequirement(dropdownId, durationId) {
+            var dropdown = document.getElementById(dropdownId);
+            var durationInput = document.getElementById(durationId);
+
+            if (dropdown.value !== "") {
+                durationInput.required = true;
+            } else {
+                durationInput.required = false;
+            }
+        }
+
+        //get Itemnumbers in the beggining
+        window.onload = function () {
+            getItemNumbersPreRun();
+        };
+
+        //disable submit button for 5 seconds
+
+        function handleSubmit() {
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = document.querySelector('[name="submitButton"]');
+            submitButton.disabled = true;
+
+            // Re-enable the submit button after 5 seconds
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 5000);
+
+            // Allow the form to submit normally
+            return true;
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <h1>RCP Production Entry PROD - <a
+            href="https://docs.google.com/spreadsheets/d/1P1hqedO93Sb_rqScsXQAIYPYpBTJZgR6f9rZ4U4YE_Q/edit?usp=sharing"
+            target="_blank">Link to Sheet (Request for Access)</a> </h1>
+    <?var url = getUrl();?>
+    <form method="post" action="<?= url ?>" onsubmit="return handleSubmit();">
+        <label style="font-size: 20px">Name <span style="color: red;">*</span></label><br>
+        <input type="text" name="name" style="font-size: 20px" required /><br><br>
+        <label style="font-size: 20px">Plant:</label><br>
+        <select name="Plants" id="Plants" style="font-size: 20px">
+            <option value="Beaver Dam">Beaver Dam</option>
+            <option value="Jordan - Masa">Jordan - Masa</option>
+            <option value="Jordan - Hess">Jordan - Hess</option>
+            <option value="Rochester">Rochester</option>
+            <option value="Silver Creek">Silver Creek</option>
+            <option value="Thorp">Thorp</option>
+            <option value="ReCon">ReCon</option>
+        </select>
+        <br><br>
+        <label style="font-size: 20px">Product_Lines</label><br>
+        <select name="Product_Line" id="Product_Line" style="font-size: 20px" onclick="GetProdLine();"
+            onchange="GetProdVals(this.value, null); " onfocus="GetProdLine(); openDropdown(Product_Line)">
+        </select><br><br>
+        <label style="font-size: 20px">Product</label><br>
+        <select name="Product" id="Product" style="font-size: 20px"
+            onchange="GetProduct_Spec(this.value, document.getElementById('Product_Line').value); ">
+        </select><br><br>
+        <label style="font-size: 20px">Product_Spec</label><br>
+        <select name="Product_Spec" id="Product_Spec" style="font-size: 20px"
+            onchange="GetColor(document.getElementById('Product').value, document.getElementById('Product_Line').value, this.value); ">
+        </select><br><br>
+        <label style="font-size: 20px">Color</label><br>
+        <select name="Color" id="Color" style="font-size: 20px"
+            onchange="GetSize(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, this.value)">
+        </select><br><br>
+        <label style="font-size: 20px">Size</label><br>
+        <select name="Size" id="Size" style="font-size: 20px"
+            onchange="GetItemNumber(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, document.getElementById('Color').value, this.value)">
+        </select><br><br>
+        <div>
+            <label style="font-size: 20px">Item Number <span style="color: red;">*</span></label><br>
+            <input list="ItemNumberVal" id="itemInput" name="ItemNumberVal" required oninput="condMasterItem();"
+                onkeypress="return event.keyCode != 13;">
+            <datalist id="ItemNumberVal" style="font-size: 20px" onkeypress="return event.keyCode != 13;">
+            </datalist><br><br>
+        </div>
+        <label style="font-size: 20px">Master Item</label><br>
+        <input type="text" name="MasterItem" id="MasterItem" readonly style="font-size: 20px; width: 800px;">
+        <br><br>
+        <label style="font-size: 20px">Cycles</label><br>
+        <input type="number" name="cycles" id="cycles" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Seconds</label><br>
+        <input type="number" name="seconds" id="seconds" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Garbage</label><br>
+        <input type="number" name="garbage" id="garbage" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Date <span style="color: red;">*</span></label><br>
+        <input type="date" name="DateSelector" id="DateSelector" style="font-size: 20px" required /><br><br>
+        <label style="font-size: 20px">Start Time</label><br>
+        <input type="time" name="starttime" id="starttime" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">End Time</label><br>
+        <input type="time" name="endtime" id="endtime" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Down Time 1 (in minutes)</label><br>
+        <select name="downtime1" id="downtime1" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime1', 'duration1')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration1" id="duration1" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime1', 'duration1')" /><br><br>
+        <label style="font-size: 20px">Down Time 2 (in minutes)</label><br>
+        <select name="downtime2" id="downtime2" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime2', 'duration2')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration2" id="duration2" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime2', 'duration2')" /><br><br>
+        <label style="font-size: 20px">Down Time 3 (in minutes)</label><br>
+        <select name="downtime3" id="downtime3" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime3', 'duration3')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration3" id="duration3" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime3', 'duration3')" /><br><br>
+        <label style="font-size: 20px">Down Time 4 (in minutes)</label><br>
+        <select name="downtime4" id="downtime4" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime4', 'duration4')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration4" id="duration4" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime4', 'duration4')" /><br><br>
+        <label style="font-size: 20px">Down Time 5 (in minutes)</label><br>
+        <select name="downtime5" id="downtime5" style="font-size: 20px"
+            onchange="checkDowntimeRequirement('downtime5', 'duration5')">
+            <option value="" selected>Select Downtime Reason</option>
+            <option value="Mold Change">Mold Change</option>
+            <option value="Mixer">Mixer</option>
+            <option value="Batcher">Batcher</option>
+            <option value="Machine">Machine</option>
+            <option value="Splitter">Splitter</option>
+            <option value="Cuber">Cuber</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Labor">Labor</option>
+        </select>
+        <input type="number" name="duration5" id="duration5" style="font-size: 20px; width: 100px;" min="0" max="100"
+            placeholder="Duration" oninput="enforceDowntimeSelection('downtime5', 'duration5')" /><br><br>
+        <input type="submit" name="submitButton" value="Submit" style="font-size: 20px" />
+        <span style="font-size: 20px">
+            <?= message ?>
+        </span>
+    </form>
+</body>
+
+</html>
