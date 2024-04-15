@@ -31,7 +31,8 @@ function doPost(e) {
   var duration3 = getParameter(e.parameters.duration3);
   var duration4 = getParameter(e.parameters.duration4);
   var duration5 = getParameter(e.parameters.duration5);
-  var currentDate = new Date();
+  var date = new Date();
+  var currentDate  = Utilities.formatDate(date, 'America/Chicago', "M/d/yyyy HH:mm:ss");
   AddRecord(name, Plants, Product_Line, Product, Product_Spec, Color, Size, ItemNumberVal, MasterItem, cycles, seconds, garbage, starttime, endtime, DateSelector, downtime1, downtime2, downtime3, downtime4, downtime5, duration1, duration2, duration3, duration4, duration5, currentDate);
 
   var htmlOutput = HtmlService.createTemplateFromFile('DependentSelect');

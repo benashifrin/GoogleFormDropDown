@@ -385,11 +385,13 @@
 </head>
 
 <body>
-    <h1>RCP Production Entry PROD</h1>
+    <h1>RCP Production Entry PROD - <a
+            href="https://docs.google.com/spreadsheets/d/1P1hqedO93Sb_rqScsXQAIYPYpBTJZgR6f9rZ4U4YE_Q/edit?usp=sharing"
+            target="_blank">Link to Sheet (Request for Access)</a> </h1>
     <?var url = getUrl();?>
     <form method="post" action="<?= url ?>" onsubmit="return handleSubmit();">
-        <label style="font-size: 20px">Name</label><br>
-        <input type="text" name="name" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Name <span style="color: red;">*</span></label><br>
+        <input type="text" name="name" style="font-size: 20px" required /><br><br>
         <label style="font-size: 20px">Plant:</label><br>
         <select name="Plants" id="Plants" style="font-size: 20px">
             <option value="Beaver Dam">Beaver Dam</option>
@@ -421,8 +423,8 @@
         <select name="Size" id="Size" style="font-size: 20px"
             onchange="GetItemNumber(document.getElementById('Product').value, document.getElementById('Product_Line').value, document.getElementById('Product_Spec').value, document.getElementById('Color').value, this.value)">
         </select><br><br>
-        <label style="font-size: 20px">Item Number</label><br>
         <div>
+            <label style="font-size: 20px">Item Number <span style="color: red;">*</span></label><br>
             <input list="ItemNumberVal" id="itemInput" name="ItemNumberVal" required oninput="condMasterItem();"
                 onkeypress="return event.keyCode != 13;">
             <datalist id="ItemNumberVal" style="font-size: 20px" onkeypress="return event.keyCode != 13;">
@@ -437,8 +439,8 @@
         <input type="number" name="seconds" id="seconds" style="font-size: 20px" /><br><br>
         <label style="font-size: 20px">Garbage</label><br>
         <input type="number" name="garbage" id="garbage" style="font-size: 20px" /><br><br>
-        <label style="font-size: 20px">Date</label><br>
-        <input type="date" name="DateSelector" id="DateSelector" style="font-size: 20px" /><br><br>
+        <label style="font-size: 20px">Date <span style="color: red;">*</span></label><br>
+        <input type="date" name="DateSelector" id="DateSelector" style="font-size: 20px" required /><br><br>
         <label style="font-size: 20px">Start Time</label><br>
         <input type="time" name="starttime" id="starttime" style="font-size: 20px" /><br><br>
         <label style="font-size: 20px">End Time</label><br>
